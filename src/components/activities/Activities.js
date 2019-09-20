@@ -1,15 +1,17 @@
 import React from "react";
+import AddActivity from "./AddActivity";
 
 const Activities = () => {
   return (
     <div>
       <br />
-      List activity labels (add, edit or delete)
+      - List activity labels (add, edit or delete)
       <br />
-      Register working activity
+      - Register working activity
       <br />
-      List registries
+      - List registries
       <br />
+      <AddActivity />
     </div>
   );
 };

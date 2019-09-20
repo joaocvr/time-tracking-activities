@@ -16,13 +16,13 @@ import {
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import {
   PieChart,
   AccountCircle,
   QueryBuilder,
-  ExitToApp
+  ExitToApp,
+  ChevronLeft,
+  ChevronRight
 } from "@material-ui/icons";
 import HomeIcon from "@material-ui/icons/Home";
 
@@ -184,11 +184,7 @@ const MiniDrawer = props => {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
+            {theme.direction === "rtl" ? <ChevronRight /> : <ChevronLeft />}
           </IconButton>
         </div>
         <Divider />
