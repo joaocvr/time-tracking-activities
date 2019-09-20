@@ -1,27 +1,17 @@
 import React from "react";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import MenuBar from "./components/menu/MenuBar";
-import NavigationMenu from "./components/menu/NavigationMenu";
+
+import MiniDrawer from "./components/common/MiniDrawer";
 
 const App = () => (
   <BrowserRouter>
     <div>
-      <MenuBar />
       <Switch>
-        <Route exact path="/" render={props => <NavigationMenu {...props} />} />
-        <Route path="/home" render={props => <NavigationMenu {...props} />} />
         <Route
-          path="/activities"
-          render={props => <NavigationMenu {...props} />}
-        />
-        <Route
-          path="/dashboard"
-          render={props => <NavigationMenu {...props} />}
-        />
-        <Route
-          path="/account"
-          render={props => <NavigationMenu {...props} />}
+          exact
+          path="/(|home|activities|dashboard|account|logout)"
+          render={props => <MiniDrawer {...props} />}
         />
       </Switch>
     </div>
