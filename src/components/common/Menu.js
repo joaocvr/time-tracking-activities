@@ -1,36 +1,36 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import {
-  Drawer,
-  AppBar,
-  Toolbar,
-  List,
-  Typography,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText
-} from "@material-ui/core";
 
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+
+import Drawer from "@material-ui/core/Drawer";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import CssBaseline from "@material-ui/core/CssBaseline";
+
 import MenuIcon from "@material-ui/icons/Menu";
-import {
-  PieChart,
-  AccountCircle,
-  QueryBuilder,
-  ExitToApp,
-  ChevronLeft,
-  ChevronRight
-} from "@material-ui/icons";
+import PieChart from "@material-ui/icons/PieChart";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import QueryBuilder from "@material-ui/icons/QueryBuilder";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
 import HomeIcon from "@material-ui/icons/Home";
+import ListIcon from "@material-ui/icons/List";
 
 import { withRouter, Link } from "react-router-dom";
 
 import Home from "../home/Home";
 import Activities from "../activities/Activities";
 import TabPanel from "./TabPanel";
+import Categories from "../categories/Categories";
 
 const drawerWidth = 180;
 
@@ -99,6 +99,8 @@ const selectNavIcon = text => {
   switch (text) {
     case "Home":
       return <HomeIcon />;
+    case "Categories":
+      return <ListIcon />;
     case "Activities":
       return <QueryBuilder />;
     case "Dashboard":
@@ -116,14 +118,16 @@ const selectItemValue = path => {
   switch (path ? path.toLowerCase() : "") {
     case "home":
       return 0;
-    case "activities":
+    case "categories":
       return 1;
-    case "dashboard":
+    case "activities":
       return 2;
-    case "account":
+    case "dashboard":
       return 3;
-    case "logout":
+    case "account":
       return 4;
+    case "logout":
+      return 5;
     default:
       return 0;
   }
@@ -189,7 +193,7 @@ const MiniDrawer = props => {
         </div>
         <Divider />
         <List>
-          {["Home", "Activities", "Dashboard"].map(text => (
+          {["Home", "Categories", "Activities", "Dashboard"].map(text => (
             <ListItem
               button
               key={text}
@@ -227,16 +231,20 @@ const MiniDrawer = props => {
           <Home />
         </TabPanel>
         <TabPanel value={value} index={1}>
+          Categories
+          <Categories />
+        </TabPanel>
+        <TabPanel value={value} index={2}>
           Activities
           <Activities />
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={value} index={3}>
           Dashboard
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel value={value} index={4}>
           Account
         </TabPanel>
-        <TabPanel value={value} index={4}>
+        <TabPanel value={value} index={5}>
           Logout
         </TabPanel>
       </main>

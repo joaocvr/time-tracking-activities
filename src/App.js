@@ -2,7 +2,7 @@ import React from "react";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-import MiniDrawer from "./components/common/MiniDrawer";
+import Menu from "./components/common/Menu";
 import Error404 from "./components/common/Error404";
 
 const App = () => (
@@ -11,8 +11,8 @@ const App = () => (
       <Switch>
         <Route
           exact
-          path="/(|home|activities|dashboard|account|logout)"
-          render={props => <MiniDrawer {...props} />}
+          path="/(|home|categories|activities|dashboard|account|logout)"
+          render={props => <Menu {...props} />}
         />
         <Route path="*" render={Error404} />
       </Switch>
