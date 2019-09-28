@@ -1,4 +1,4 @@
-import { ADD_CATEGORY } from "./actions";
+import { ADD_CATEGORY, DELETE_CATEGORY } from "./actions";
 
 const initialState = {
   1: { id: 1, name: "Study", activities: ["React", "MBA"] },
@@ -10,6 +10,12 @@ const categories = (state = initialState, action) => {
   switch (action.type) {
     case ADD_CATEGORY: {
       return { ...state, [action.payload.id]: action.payload };
+    }
+
+    case DELETE_CATEGORY: {
+      const categories = { ...state };
+      delete categories[action.payload];
+      return categories;
     }
 
     default: {

@@ -1,37 +1,34 @@
 import React from "react";
 
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Collapse from "@material-ui/core/Collapse";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Divider from "@material-ui/core/Divider";
-import FormControl from "@material-ui/core/FormControl";
-import TextField from "@material-ui/core/TextField";
 
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import FolderIcon from "@material-ui/icons/Folder";
+import DeleteIcon from "@material-ui/icons/Delete";
+import FolderOpenOutlinedIcon from "@material-ui/icons/FolderOpenOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
 
 import { connect } from "react-redux";
-import { addCategory } from "./actions";
+import { addCategory, deleteCategory } from "./actions";
+import AddCategoryDialog from "./AddCategoryDialog";
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1
   },
   paperHead: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     textAlign: "left",
     width: "100%"
   },
@@ -46,22 +43,43 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "#29a329",
     color: "white",
     border: 1
+  },
+  listItemIcon: {
+    backgroundColor: "white",
+    color: "black"
   }
 }));
 
-const CategoryItem = ({ category }) => {
+const CategoryItem = ({ category, deleteCategory }) => {
+  const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+
+  const DeleteIconButton = () => (
+    <IconButton
+      edge="end"
+      key={category.id}
+      id={category.id}
+      onClick={deleteCategory}
+    >
+      <DeleteIcon />
+    </IconButton>
+  );
 
   return (
     <Grid container>
-      <Grid item xs={10}>
+      <Grid item xs={12}>
         {category.activities && category.activities.length > 0 ? (
           <Collapse in={true}>
             <ListItem button onClick={() => setExpanded(!expanded)}>
-              <ListItemIcon>
-                {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </ListItemIcon>
-              <ListItemText primary={category.name} />
+              <ListItemAvatar>
+                <Avatar className={classes.listItemIcon}>
+                  <FolderIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText>{category.name}</ListItemText>
+              <ListItemSecondaryAction>
+                <DeleteIconButton />
+              </ListItemSecondaryAction>
             </ListItem>
             <List>
               {expanded &&
@@ -74,53 +92,23 @@ const CategoryItem = ({ category }) => {
           </Collapse>
         ) : (
           <ListItem>
-            <ListItemText inset primary={category.name} />
+            <ListItemAvatar>
+              <Avatar className={classes.listItemIcon}>
+                <FolderOpenOutlinedIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={category.name} />
+            <ListItemSecondaryAction>
+              <DeleteIconButton />
+            </ListItemSecondaryAction>
           </ListItem>
         )}
-      </Grid>
-      <Grid item xs={2}>
-        <ListItem button>
-          <ListItemIcon>
-            <DeleteOutlineIcon />
-          </ListItemIcon>
-        </ListItem>
       </Grid>
     </Grid>
   );
 };
 
-const AddCategoryDialog = ({ open, handleClose }) => {
-  const [name, setName] = React.useState("");
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <form autoComplete="off">
-        <DialogTitle>New category</DialogTitle>
-        <Divider />
-        <DialogContent>
-          <FormControl>
-            <TextField
-              label="Name"
-              value={name}
-              onChange={event => setName(event.target.value)}
-            />
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Grid container>
-            <Grid item xs={6} align="center">
-              <Button onClick={handleClose}>Cancel</Button>
-            </Grid>
-            <Grid item xs={6} align="center">
-              <Button>ADD</Button>
-            </Grid>
-          </Grid>
-        </DialogActions>
-      </form>
-    </Dialog>
-  );
-};
-
-const Categories = ({ categories }) => {
+const Categories = ({ categories, deleteCategory }) => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -138,22 +126,31 @@ const Categories = ({ categories }) => {
             Add a category
           </Button>
         </Grid>
-        <Grid container>
-          <Grid item xs={3}>
-            <Paper className={classes.paperHead}>
-              <Typography variant={"h6"}>All Categories</Typography>
-            </Paper>
-            <Paper className={classes.paperBody}>
-              <List>
-                {categories &&
-                  Object.keys(categories).map(key => (
-                    <CategoryItem key={key} category={categories[key]} />
-                  ))}
-              </List>
-            </Paper>
+        {categories && Object.keys(categories).length > 0 ? (
+          <Grid container>
+            <Grid item xs={3}>
+              <Paper className={classes.paperHead}>
+                <Typography variant={"h6"}>All Categories</Typography>
+              </Paper>
+              <Paper className={classes.paperBody}>
+                <List>
+                  {categories &&
+                    Object.keys(categories).map(key => (
+                      <CategoryItem
+                        key={key}
+                        category={categories[key]}
+                        deleteCategory={() => deleteCategory(key)}
+                      />
+                    ))}
+                </List>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+        ) : (
+          <div />
+        )}
       </Grid>
+
       <AddCategoryDialog open={open} handleClose={() => setOpen(false)} />
     </div>
   );
@@ -163,5 +160,5 @@ const mapStateToProps = ({ categories }) => ({ categories });
 
 export default connect(
   mapStateToProps,
-  { addCategory }
+  { addCategory, deleteCategory }
 )(Categories);

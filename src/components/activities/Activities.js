@@ -3,15 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 import DataTable from "../common/DataTable";
-
 import AddActivity from "./AddActivity";
-import ListActivities from "./ListActivities";
 
 const Activities = activities => {
   return (
     <div>
       <DataTable columns={["Oi", "Olá"]} rows={[{ a: "1", b: "2" }]} />
-      <ListActivities activities={activities.data} />
       <br />
       Add a activity: <AddActivity />
       <br />
