@@ -3,14 +3,11 @@ import React from "react";
 import { connect } from "react-redux";
 
 import DataTable from "../common/DataTable";
-import AddActivity from "./AddActivity";
 
-const Activities = activities => {
+const Registries = activities => {
   return (
     <div>
       <DataTable columns={["Oi", "Olá"]} rows={[{ a: "1", b: "2" }]} />
-      <br />
-      Add a activity: <AddActivity />
       <br />
       - Register working activity
       <br />
@@ -52,4 +49,4 @@ const Activities = activities => {
 
 const mapStateToProps = ({ activities }) => ({ data: activities });
 
-export default connect(mapStateToProps)(Activities);
+export default connect(mapStateToProps)(Registries);

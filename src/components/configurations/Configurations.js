@@ -20,8 +20,11 @@ import FolderOpenOutlinedIcon from "@material-ui/icons/FolderOpenOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { connect } from "react-redux";
-import { addCategory, deleteCategory } from "./actions";
-import AddCategoryDialog from "./AddCategoryDialog";
+
+import { addCategory, deleteCategory } from "../categories/actions";
+import { addActivity } from "../activities/actions";
+import AddActivityDialog from "../activities/AddActivityDialog";
+import AddCategoryDialog from "../categories/AddCategoryDialog";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -111,13 +114,23 @@ const CategoryItem = ({ category, deleteCategory }) => {
 const Categories = ({ categories, deleteCategory }) => {
   const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
+  const [openAddActivity, setOpenAddActivity] = React.useState(false);
+  const [openAddCategory, setOpenAddCategory] = React.useState(false);
 
-  const handleClickAddCategory = () => setOpen(true);
+  const handleClickAddActivity = () => setOpenAddActivity(true);
+  const handleClickAddCategory = () => setOpenAddCategory(true);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
+        <Grid item xs={2}>
+          <Button
+            onClick={handleClickAddActivity}
+            className={classes.addButton}
+          >
+            Add a activity
+          </Button>
+        </Grid>
         <Grid item xs={2}>
           <Button
             onClick={handleClickAddCategory}
@@ -150,8 +163,14 @@ const Categories = ({ categories, deleteCategory }) => {
           <div />
         )}
       </Grid>
-
-      <AddCategoryDialog open={open} handleClose={() => setOpen(false)} />
+      <AddActivityDialog
+        open={openAddActivity}
+        handleClose={() => setOpenAddActivity(false)}
+      />
+      <AddCategoryDialog
+        open={openAddCategory}
+        handleClose={() => setOpenAddCategory(false)}
+      />
     </div>
   );
 };
@@ -160,5 +179,5 @@ const mapStateToProps = ({ categories }) => ({ categories });
 
 export default connect(
   mapStateToProps,
-  { addCategory, deleteCategory }
+  { addCategory, deleteCategory, addActivity }
 )(Categories);

@@ -51,7 +51,7 @@ const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
             ) : (
               <TextField
                 error
-                helperText={"Insert the name!"}
+                helperText={"Insert the name"}
                 required
                 label="Name"
                 value={name}

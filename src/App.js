@@ -11,7 +11,7 @@ const App = () => (
       <Switch>
         <Route
           exact
-          path="/(|home|categories|activities|dashboard|account|logout)"
+          path="/(|home|configurations|registries|dashboard|account|logout)"
           render={props => <Menu {...props} />}
         />
         <Route path="*" render={Error404} />

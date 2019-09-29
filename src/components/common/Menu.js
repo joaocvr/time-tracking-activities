@@ -28,11 +28,11 @@ import ListIcon from "@material-ui/icons/List";
 import { withRouter, Link } from "react-router-dom";
 
 import Home from "../home/Home";
-import Activities from "../activities/Activities";
 import TabPanel from "./TabPanel";
-import Categories from "../categories/Categories";
+import Configurations from "../configurations/Configurations";
+import Registries from "../registries/Registries";
 
-const drawerWidth = 180;
+const drawerWidth = 205;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -99,9 +99,9 @@ const selectNavIcon = text => {
   switch (text) {
     case "Home":
       return <HomeIcon />;
-    case "Categories":
+    case "Configurations":
       return <ListIcon />;
-    case "Activities":
+    case "Registries":
       return <QueryBuilder />;
     case "Dashboard":
       return <PieChart />;
@@ -118,9 +118,9 @@ const selectItemValue = path => {
   switch (path ? path.toLowerCase() : "") {
     case "home":
       return 0;
-    case "categories":
+    case "configurations":
       return 1;
-    case "activities":
+    case "registries":
       return 2;
     case "dashboard":
       return 3;
@@ -193,7 +193,7 @@ const MiniDrawer = props => {
         </div>
         <Divider />
         <List>
-          {["Home", "Categories", "Activities", "Dashboard"].map(text => (
+          {["Home", "Configurations", "Registries", "Dashboard"].map(text => (
             <ListItem
               button
               key={text}
@@ -231,12 +231,12 @@ const MiniDrawer = props => {
           <Home />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Categories
-          <Categories />
+          Configurations
+          <Configurations />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Activities
-          <Activities />
+          Registries
+          <Registries />
         </TabPanel>
         <TabPanel value={value} index={3}>
           Dashboard
