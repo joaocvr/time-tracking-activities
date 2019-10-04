@@ -1,33 +1,23 @@
+import { deleteActivities } from "../activities/actions";
+
 export const ADD_CATEGORY = "ADD_CATEGORY";
 export const DELETE_CATEGORY = "DELETE_CATEGORY";
-export const BIND_ACTIVITY_TO_CATEGORY = "BIND_ACTIVITY_TO_CATEGORY";
 
-export const addedCategory = category => ({
+export const doAddCategory = category => ({
   type: ADD_CATEGORY,
   payload: category
 });
 
-export const deletedCategory = id => ({
+export const doDeleteCategory = nameCategory => ({
   type: DELETE_CATEGORY,
-  payload: id
+  payload: nameCategory
 });
 
-export const bindedActivityToCategory = (nameActivity, nameCategory) => ({
-  type: BIND_ACTIVITY_TO_CATEGORY,
-  payload: { nameActivity, nameCategory }
-});
-
-export const addCategory = category => dispatch => {
-  dispatch(addedCategory(category));
+export const addCategory = nameCategory => dispatch => {
+  dispatch(doAddCategory(nameCategory));
 };
 
-export const deleteCategory = id => dispatch => {
-  dispatch(deletedCategory(id));
-};
-
-export const bindActivityToCategory = ({
-  nameActivity,
-  nameCategory
-}) => dispatch => {
-  dispatch(bindedActivityToCategory(nameActivity, nameCategory));
+export const deleteCategory = nameCategory => dispatch => {
+  dispatch(doDeleteCategory(nameCategory));
+  dispatch(deleteActivities(nameCategory));
 };

@@ -13,12 +13,19 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import { makeStyles } from "@material-ui/core/styles";
+
 import { connect } from "react-redux";
 
 import { addActivity } from "./actions";
-import { bindActivityToCategory } from "../categories/actions";
 
 const uuidv4 = require("uuid/v4");
+
+const useStyles = makeStyles(theme => ({
+  formControl: {
+    width: "100%"
+  }
+}));
 
 const NameTextField = ({ isError, value, onChange }) => {
   return !isError ? (
@@ -29,12 +36,11 @@ const NameTextField = ({ isError, value, onChange }) => {
 };
 
 const SelectCategory = ({ isError, value, onChange, categories }) => {
-  const categoriesValues = Object.values(categories);
   const MenuItems =
-    categoriesValues.length > 0 ? (
-      categoriesValues.map(c => (
-        <MenuItem key={c.id} value={c.name}>
-          {c.name}
+    categories && categories.length > 0 ? (
+      categories.map(c => (
+        <MenuItem key={c} value={c}>
+          {c}
         </MenuItem>
       ))
     ) : (
@@ -52,13 +58,8 @@ const SelectCategory = ({ isError, value, onChange, categories }) => {
   );
 };
 
-const AddActivityDialog = ({
-  open,
-  handleClose,
-  addActivity,
-  bindActivityToCategory,
-  categories
-}) => {
+const AddActivityDialog = ({ open, handleClose, addActivity, categories }) => {
+  const classes = useStyles();
   const [nameFullfilled, setNameFullfilled] = React.useState(true);
   const [categoryFullfilled, setCategoryFullfilled] = React.useState(true);
   const initialActivity = {
@@ -83,10 +84,6 @@ const AddActivityDialog = ({
         name: newActivity.name,
         category: newActivity.category
       });
-      bindActivityToCategory({
-        nameActivity: newActivity.name,
-        nameCategory: newActivity.category
-      });
       handleClose();
       setNewActivity(initialActivity);
       setNameFullfilled(true);
@@ -106,13 +103,13 @@ const AddActivityDialog = ({
     handleClose();
   };
 
-  return (
+  return categories && categories.length > 0 ? (
     <Dialog open={open} onClose={closeAndClearControllers}>
       <form autoComplete="off">
         <DialogTitle>New activity</DialogTitle>
         <Divider />
         <DialogContent>
-          <FormControl>
+          <FormControl className={classes.formControl}>
             <NameTextField
               isError={!nameFullfilled}
               value={newActivity.name}
@@ -121,7 +118,7 @@ const AddActivityDialog = ({
           </FormControl>
         </DialogContent>
         <DialogContent>
-          <FormControl>
+          <FormControl className={classes.formControl}>
             <InputLabel>Category</InputLabel>
             <SelectCategory
               isError={!categoryFullfilled}
@@ -131,6 +128,8 @@ const AddActivityDialog = ({
             />
           </FormControl>
         </DialogContent>
+        <br />
+        <Divider />
         <DialogActions>
           <Grid container>
             <Grid item xs={6} align="center">
@@ -143,6 +142,21 @@ const AddActivityDialog = ({
         </DialogActions>
       </form>
     </Dialog>
+  ) : (
+    <Dialog open={open} onClose={closeAndClearControllers}>
+      <DialogTitle align={"center"}>Atention!</DialogTitle>
+      <Divider />
+      <DialogContent>
+        <InputLabel>There is no categories to be chosen, add one!</InputLabel>
+      </DialogContent>
+      <DialogActions>
+        <Grid container>
+          <Grid item xs={12} align="center">
+            <Button onClick={handleClose}>OK</Button>
+          </Grid>
+        </Grid>
+      </DialogActions>
+    </Dialog>
   );
 };
 
@@ -154,5 +168,5 @@ const mapStateToProps = ({ categories }, { open, handleClose }) => ({
 
 export default connect(
   mapStateToProps,
-  { addActivity, bindActivityToCategory }
+  { addActivity }
 )(AddActivityDialog);

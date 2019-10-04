@@ -20,8 +20,7 @@ const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
 
   const handleClickAdd = () => {
     if (name && name !== "") {
-      const uuidv4 = require("uuid/v4");
-      addCategory({ id: uuidv4(), name, activities: [] });
+      addCategory(name);
       handleClose();
       setName("");
       setNameFullfilled(true);
@@ -30,9 +29,17 @@ const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
     }
   };
 
+  const handleKeyPressEnter = ev => {
+    if (ev.key === "Enter") {
+      handleClickAdd();
+      ev.preventDefault();
+    }
+  };
+
   const handleClickClose = () => {
     handleClose();
     setName("");
+    setNameFullfilled(true);
   };
 
   return (
@@ -47,6 +54,7 @@ const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
                 label="Name"
                 value={name}
                 onChange={event => setName(event.target.value)}
+                onKeyPress={handleKeyPressEnter}
               />
             ) : (
               <TextField
@@ -56,6 +64,7 @@ const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
                 label="Name"
                 value={name}
                 onChange={event => setName(event.target.value)}
+                onKeyPress={handleKeyPressEnter}
               />
             )}
           </FormControl>

@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 import { addCategory, deleteCategory } from "../categories/actions";
-import { addActivity } from "../activities/actions";
+import { addActivity, deleteActivity } from "../activities/actions";
 import AddActivityDialog from "../activities/AddActivityDialog";
 import AddCategoryDialog from "../categories/AddCategoryDialog";
 
@@ -43,75 +43,147 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     variant: "contained",
     margin: theme.spacing(1),
-    backgroundColor: "#29a329",
+    backgroundColor: "#0d47a1",
     color: "white",
     border: 1
   },
-  listItemIcon: {
+  blueIcon: {
     backgroundColor: "white",
-    color: "black"
+    color: "#0d47a1"
+  },
+  listItem: {
+    padding: theme.spacing(-1)
   }
 }));
 
-const CategoryItem = ({ category, deleteCategory }) => {
+const CategoryItem = ({
+  category,
+  activities,
+  deleteCategory,
+  deleteActivity
+}) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [
+    deleteIconButtonCategory,
+    setDeleteIconButtonCategory
+  ] = React.useState(<div />);
+  const [
+    deleteIconButtonActivity,
+    setDeleteIconButtonActivity
+  ] = React.useState(<div />);
 
-  const DeleteIconButton = () => (
+  const DeleteIconButtonCategory = () => (
     <IconButton
       edge="end"
-      key={category.id}
-      id={category.id}
+      key={category}
+      id={category}
       onClick={deleteCategory}
     >
       <DeleteIcon />
     </IconButton>
   );
 
+  const DeleteIconButtonActivity = () => (
+    <IconButton edge="end" onClick={deleteActivity}>
+      <DeleteIcon />
+    </IconButton>
+  );
+
+  const handleOnMouseEnterCategory = () =>
+    setDeleteIconButtonCategory(<DeleteIconButtonCategory />);
+  const handleOnMouseLeaveCategory = () => setDeleteIconButtonCategory(<div />);
+
+  const handleOnMouseEnterActivity = () => {
+    console.log("handleOnMouseEnterActivity");
+    setDeleteIconButtonActivity(<DeleteIconButtonActivity />);
+  };
+  const handleOnMouseLeaveActivity = () => {
+    console.log("handleOnMouseLeaveActivity");
+    setDeleteIconButtonActivity(<div />);
+  };
+
   return (
     <Grid container>
       <Grid item xs={12}>
-        {category.activities && category.activities.length > 0 ? (
+        {activities && activities.length > 0 ? (
           <Collapse in={true}>
-            <ListItem button onClick={() => setExpanded(!expanded)}>
-              <ListItemAvatar>
-                <Avatar className={classes.listItemIcon}>
-                  <FolderIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText>{category.name}</ListItemText>
-              <ListItemSecondaryAction>
-                <DeleteIconButton />
-              </ListItemSecondaryAction>
-            </ListItem>
-            <List>
-              {expanded &&
-                category.activities.map(a => (
-                  <ListItem key={a}>
-                    <ListItemText inset secondary={a} />
-                  </ListItem>
-                ))}
-            </List>
+            <Grid container>
+              <Grid
+                item
+                xs={12}
+                onMouseEnter={handleOnMouseEnterCategory}
+                onMouseLeave={handleOnMouseLeaveCategory}
+              >
+                <ListItem
+                  button
+                  onClick={() => setExpanded(!expanded)}
+                  className={classes.listItem}
+                >
+                  <ListItemAvatar>
+                    <Avatar className={classes.blueIcon}>
+                      <FolderIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText>{category}</ListItemText>
+                  <ListItemSecondaryAction>
+                    {deleteIconButtonCategory}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                onMouseEnter={handleOnMouseEnterActivity}
+                onMouseLeave={handleOnMouseLeaveActivity}
+              >
+                <List className={classes.listItem}>
+                  {expanded &&
+                    activities.map(a => (
+                      <ListItem key={a}>
+                        <ListItemText inset secondary={a} />
+                        <ListItemSecondaryAction>
+                          {deleteIconButtonActivity}
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    ))}
+                </List>
+              </Grid>
+            </Grid>
           </Collapse>
         ) : (
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar className={classes.listItemIcon}>
-                <FolderOpenOutlinedIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={category.name} />
-            <ListItemSecondaryAction>
-              <DeleteIconButton />
-            </ListItemSecondaryAction>
-          </ListItem>
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              onMouseEnter={handleOnMouseEnterCategory}
+              onMouseLeave={handleOnMouseLeaveCategory}
+            >
+              <ListItem className={classes.listItem}>
+                <ListItemAvatar>
+                  <Avatar className={classes.blueIcon}>
+                    <FolderOpenOutlinedIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={category} />
+                <ListItemSecondaryAction>
+                  {deleteIconButtonCategory}
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Grid>
+          </Grid>
         )}
       </Grid>
     </Grid>
   );
 };
 
-const Categories = ({ categories, deleteCategory }) => {
+const Configurations = ({
+  categories,
+  activities,
+  deleteCategory,
+  deleteActivity
+}) => {
   const classes = useStyles();
 
   const [openAddActivity, setOpenAddActivity] = React.useState(false);
@@ -139,7 +211,7 @@ const Categories = ({ categories, deleteCategory }) => {
             Add a category
           </Button>
         </Grid>
-        {categories && Object.keys(categories).length > 0 ? (
+        {categories && categories.length > 0 ? (
           <Grid container>
             <Grid item xs={3}>
               <Paper className={classes.paperHead}>
@@ -147,14 +219,15 @@ const Categories = ({ categories, deleteCategory }) => {
               </Paper>
               <Paper className={classes.paperBody}>
                 <List>
-                  {categories &&
-                    Object.keys(categories).map(key => (
-                      <CategoryItem
-                        key={key}
-                        category={categories[key]}
-                        deleteCategory={() => deleteCategory(key)}
-                      />
-                    ))}
+                  {categories.map(category => (
+                    <CategoryItem
+                      key={category}
+                      category={category}
+                      activities={activities[category]}
+                      deleteCategory={() => deleteCategory(category)}
+                      deleteActivity={deleteActivity}
+                    />
+                  ))}
                 </List>
               </Paper>
             </Grid>
@@ -175,9 +248,12 @@ const Categories = ({ categories, deleteCategory }) => {
   );
 };
 
-const mapStateToProps = ({ categories }) => ({ categories });
+const mapStateToProps = ({ categories, activities }) => ({
+  categories,
+  activities
+});
 
 export default connect(
   mapStateToProps,
-  { addCategory, deleteCategory, addActivity }
-)(Categories);
+  { addCategory, deleteCategory, addActivity, deleteActivity }
+)(Configurations);

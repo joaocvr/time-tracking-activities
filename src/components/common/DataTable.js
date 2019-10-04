@@ -28,9 +28,6 @@ const useStyles = makeStyles(theme => ({
 const DataTable = ({ columns, rows }) => {
   const classes = useStyles();
 
-  console.log("DataTable", "columns", columns);
-  console.log("DataTable", "rows", rows);
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

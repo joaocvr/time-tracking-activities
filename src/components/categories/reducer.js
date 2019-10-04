@@ -1,38 +1,14 @@
-import {
-  ADD_CATEGORY,
-  DELETE_CATEGORY,
-  BIND_ACTIVITY_TO_CATEGORY
-} from "./actions";
+import { ADD_CATEGORY, DELETE_CATEGORY } from "./actions";
 
-const categories = (state = {}, action) => {
+export default (state = [], action) => {
   switch (action.type) {
-    case ADD_CATEGORY: {
-      return { ...state, [action.payload.id]: action.payload };
-    }
+    case ADD_CATEGORY:
+      return [...state, action.payload];
 
-    case DELETE_CATEGORY: {
-      const categories = { ...state };
-      delete categories[action.payload];
-      return categories;
-    }
+    case DELETE_CATEGORY:
+      return state.filter(c => c !== action.payload);
 
-    case BIND_ACTIVITY_TO_CATEGORY: {
-      const { nameActivity, nameCategory } = action.payload;
-      const { id } = Object.values(state).find(c => c.name === nameCategory);
-      const oldCategory = state[id];
-      return {
-        ...categories,
-        [id]: {
-          ...oldCategory,
-          activities: [...oldCategory.activities, nameActivity]
-        }
-      };
-    }
-
-    default: {
+    default:
       return state;
-    }
   }
 };
-
-export default categories;
