@@ -30,7 +30,7 @@ import { withRouter, Link } from "react-router-dom";
 import Home from "../home/Home";
 import TabPanel from "./TabPanel";
 import Configurations from "../configurations/Configurations";
-import Registries from "../registries/Registries";
+import Registries from "../registry/Registries";
 
 const drawerWidth = 205;
 

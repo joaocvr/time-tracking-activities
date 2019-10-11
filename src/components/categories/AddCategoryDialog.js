@@ -14,13 +14,15 @@ import { connect } from "react-redux";
 
 import { addCategory } from "./actions";
 
+const uuidv4 = require("uuid/v4");
+
 const AddCategoryDialog = ({ open, handleClose, addCategory }) => {
   const [name, setName] = React.useState("");
   const [nameFullfilled, setNameFullfilled] = React.useState(true);
 
   const handleClickAdd = () => {
     if (name && name !== "") {
-      addCategory(name);
+      addCategory({ name, id: uuidv4() });
       handleClose();
       setName("");
       setNameFullfilled(true);

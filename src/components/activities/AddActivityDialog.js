@@ -8,7 +8,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import FormControl from "@material-ui/core/FormControl";
-import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -18,27 +17,21 @@ import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 
 import { addActivity } from "./actions";
+import FlexibleTextField from "../common/FlexibleTextField";
 
 const uuidv4 = require("uuid/v4");
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   formControl: {
     width: "100%"
   }
 }));
 
-const NameTextField = ({ isError, value, onChange }) => {
-  return !isError ? (
-    <TextField label="Name" value={value} onChange={onChange} />
-  ) : (
-    <TextField error required label="Name" value={value} onChange={onChange} />
-  );
-};
-
 const SelectCategory = ({ isError, value, onChange, categories }) => {
+  const categoriesNames = Object.keys(categories);
   const MenuItems =
-    categories && categories.length > 0 ? (
-      categories.map(c => (
+    categoriesNames && categoriesNames.length > 0 ? (
+      categoriesNames.map(c => (
         <MenuItem key={c} value={c}>
           {c}
         </MenuItem>
@@ -59,6 +52,7 @@ const SelectCategory = ({ isError, value, onChange, categories }) => {
 };
 
 const AddActivityDialog = ({ open, handleClose, addActivity, categories }) => {
+  const categoriesNames = Object.keys(categories);
   const classes = useStyles();
   const [nameFullfilled, setNameFullfilled] = React.useState(true);
   const [categoryFullfilled, setCategoryFullfilled] = React.useState(true);
@@ -103,14 +97,14 @@ const AddActivityDialog = ({ open, handleClose, addActivity, categories }) => {
     handleClose();
   };
 
-  return categories && categories.length > 0 ? (
+  return categoriesNames && categoriesNames.length > 0 ? (
     <Dialog open={open} onClose={closeAndClearControllers}>
       <form autoComplete="off">
         <DialogTitle>New activity</DialogTitle>
         <Divider />
         <DialogContent>
           <FormControl className={classes.formControl}>
-            <NameTextField
+            <FlexibleTextField
               isError={!nameFullfilled}
               value={newActivity.name}
               onChange={handleChange("name")}

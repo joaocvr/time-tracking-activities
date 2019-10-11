@@ -8,13 +8,13 @@ export const doAddCategory = category => ({
   payload: category
 });
 
-export const doDeleteCategory = nameCategory => ({
+export const doDeleteCategory = category => ({
   type: DELETE_CATEGORY,
-  payload: nameCategory
+  payload: category
 });
 
-export const addCategory = nameCategory => dispatch => {
-  dispatch(doAddCategory(nameCategory));
+export const addCategory = category => dispatch => {
+  dispatch(doAddCategory(category));
 };
 
 export const deleteCategory = nameCategory => dispatch => {

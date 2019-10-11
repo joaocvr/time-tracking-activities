@@ -8,20 +8,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "100%"
-  },
+const useStyles = makeStyles(() => ({
   paper: {
-    marginTop: theme.spacing(3),
-    width: "100%",
-    overflowX: "auto",
-    marginBottom: theme.spacing(2)
-  },
-  table: {
-    minWidth: 650
+    width: "100%"
   }
 }));
 
@@ -29,37 +19,34 @@ const DataTable = ({ columns, rows }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Table className={classes.table} size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={5}>
-                <Typography variant="h6">Workout</Typography>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Activity</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell>Carbs&nbsp;(g)</TableCell>
-              <TableCell>Protein&nbsp;(g)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows &&
-              rows.map(row => (
-                <TableRow key={row.a}>
-                  <TableCell component="th" scope="row">
-                    {row.a}
-                  </TableCell>
-                  <TableCell align="left">{row.b}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </Paper>
-    </div>
+    <Paper className={classes.paper}>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            {columns && columns.map(c => <TableCell key={c}>{c}</TableCell>)}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows &&
+            rows.map(r => (
+              <TableRow key={r.c1}>
+                {Object.values(r) &&
+                  Object.values(r).map(tuple => (
+                    <TableCell key={tuple} align="left">
+                      {tuple}
+                    </TableCell>
+                  ))}
+              </TableRow>
+            ))}
+          <TableRow>
+            <TableCell colSpan={3} align={"right"}>
+              Total
+            </TableCell>
+            <TableCell align={"center"}>134</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </Paper>
   );
 };
 

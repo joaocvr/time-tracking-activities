@@ -1,21 +1,29 @@
 import { ADD_ACTIVITY, DELETE_ACTIVITY, DELETE_ACTIVITIES } from "./actions";
 
-export default (state = {}, action) => {
+export default (
+  state = {
+    Study: {
+      React: {
+        id: "d492f6b8-5396-4414-b0b9-9637845c2128"
+      }
+    }
+  },
+  action
+) => {
   switch (action.type) {
-    case ADD_ACTIVITY:
-      const { category, name } = action.payload;
-      const oldCategoryContent = state[category] ? [...state[category]] : [];
+    case ADD_ACTIVITY: {
+      const { id, category, name } = action.payload;
+      const oldCategoryContent = state[category] ? { ...state[category] } : {};
       return {
         ...state,
-        [category]: [...oldCategoryContent, name]
+        [category]: { ...oldCategoryContent, [name]: { id } }
       };
+    }
 
     case DELETE_ACTIVITY: {
-      const { nameCategory, nameActivity } = action.payload;
-      const activities =
-        state.nameCategory &&
-        state.nameCategory.filter(a => a !== nameActivity);
-      return { ...state, [nameCategory]: [...activities] };
+      const { activity, category } = action.payload;
+      delete state[category][activity];
+      return { ...state };
     }
 
     case DELETE_ACTIVITIES: {

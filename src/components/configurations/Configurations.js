@@ -71,7 +71,7 @@ const CategoryItem = ({
   const [
     deleteIconButtonActivity,
     setDeleteIconButtonActivity
-  ] = React.useState(<div />);
+  ] = React.useState(false);
 
   const DeleteIconButtonCategory = () => (
     <IconButton
@@ -84,8 +84,8 @@ const CategoryItem = ({
     </IconButton>
   );
 
-  const DeleteIconButtonActivity = () => (
-    <IconButton edge="end" onClick={deleteActivity}>
+  const DeleteIconButtonActivity = ({ activity, category }) => (
+    <IconButton edge="end" onClick={() => deleteActivity(activity, category)}>
       <DeleteIcon />
     </IconButton>
   );
@@ -94,19 +94,15 @@ const CategoryItem = ({
     setDeleteIconButtonCategory(<DeleteIconButtonCategory />);
   const handleOnMouseLeaveCategory = () => setDeleteIconButtonCategory(<div />);
 
-  const handleOnMouseEnterActivity = () => {
-    console.log("handleOnMouseEnterActivity");
-    setDeleteIconButtonActivity(<DeleteIconButtonActivity />);
-  };
-  const handleOnMouseLeaveActivity = () => {
-    console.log("handleOnMouseLeaveActivity");
-    setDeleteIconButtonActivity(<div />);
-  };
+  const handleOnMouseEnterActivity = () => setDeleteIconButtonActivity(true);
+  const handleOnMouseLeaveActivity = () => setDeleteIconButtonActivity(false);
+
+  const activitiesNames = activities ? Object.keys(activities) : [];
 
   return (
     <Grid container>
       <Grid item xs={12}>
-        {activities && activities.length > 0 ? (
+        {activitiesNames && activitiesNames.length > 0 ? (
           <Collapse in={true}>
             <Grid container>
               <Grid
@@ -139,11 +135,18 @@ const CategoryItem = ({
               >
                 <List className={classes.listItem}>
                   {expanded &&
-                    activities.map(a => (
+                    activitiesNames.map(a => (
                       <ListItem key={a}>
                         <ListItemText inset secondary={a} />
-                        <ListItemSecondaryAction>
-                          {deleteIconButtonActivity}
+                        <ListItemSecondaryAction key={a}>
+                          {deleteIconButtonActivity ? (
+                            <DeleteIconButtonActivity
+                              activity={a}
+                              category={category}
+                            />
+                          ) : (
+                            <div />
+                          )}
                         </ListItemSecondaryAction>
                       </ListItem>
                     ))}
@@ -192,6 +195,8 @@ const Configurations = ({
   const handleClickAddActivity = () => setOpenAddActivity(true);
   const handleClickAddCategory = () => setOpenAddCategory(true);
 
+  const categoriesNames = Object.keys(categories);
+
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
@@ -211,7 +216,7 @@ const Configurations = ({
             Add a category
           </Button>
         </Grid>
-        {categories && categories.length > 0 ? (
+        {categoriesNames && categoriesNames.length > 0 ? (
           <Grid container>
             <Grid item xs={3}>
               <Paper className={classes.paperHead}>
@@ -219,7 +224,7 @@ const Configurations = ({
               </Paper>
               <Paper className={classes.paperBody}>
                 <List>
-                  {categories.map(category => (
+                  {categoriesNames.map(category => (
                     <CategoryItem
                       key={category}
                       category={category}

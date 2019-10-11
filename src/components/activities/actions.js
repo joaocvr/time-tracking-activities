@@ -7,9 +7,9 @@ const doAddActivity = nameActivity => ({
   payload: nameActivity
 });
 
-const doDeleteActivity = (nameActivity, nameCategory) => ({
+const doDeleteActivity = (activity, category) => ({
   type: DELETE_ACTIVITY,
-  payload: { nameActivity, nameCategory }
+  payload: { activity, category }
 });
 
 const doDeleteActivities = nameCategory => ({
@@ -21,8 +21,8 @@ export const addActivity = nameActivity => dispatch => {
   dispatch(doAddActivity(nameActivity));
 };
 
-export const deleteActivity = (nameActivity, nameCategory) => dispatch => {
-  dispatch(doDeleteActivity(nameActivity, nameCategory));
+export const deleteActivity = (activity, category) => dispatch => {
+  dispatch(doDeleteActivity(activity, category));
 };
 
 export const deleteActivities = nameCategory => dispatch => {
