@@ -11,13 +11,15 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import ActivityReducer from "./components/activities/reducer";
 import CategoriesReducer from "./components/categories/reducer";
+import RegistriesReducer from "./components/registries/reducer";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   combineReducers({
     activities: ActivityReducer,
-    categories: CategoriesReducer
+    categories: CategoriesReducer,
+    registries: RegistriesReducer
   }),
   composeEnhancers(applyMiddleware(thunk))
 );

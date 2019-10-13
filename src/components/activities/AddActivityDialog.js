@@ -40,12 +40,8 @@ const SelectCategory = ({ isError, value, onChange, categories }) => {
       <div />
     );
 
-  return !isError ? (
-    <Select value={value} onChange={onChange}>
-      {MenuItems}
-    </Select>
-  ) : (
-    <Select error required value={value} onChange={onChange}>
+  return (
+    <Select error={isError} required value={value} onChange={onChange}>
       {MenuItems}
     </Select>
   );
@@ -105,6 +101,7 @@ const AddActivityDialog = ({ open, handleClose, addActivity, categories }) => {
         <DialogContent>
           <FormControl className={classes.formControl}>
             <FlexibleTextField
+              name={"Name"}
               isError={!nameFullfilled}
               value={newActivity.name}
               onChange={handleChange("name")}

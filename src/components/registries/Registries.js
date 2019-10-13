@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const ControlledExpansionTable = ({ category, activities }) => {
+const ControlledExpansionTable = ({ category, categoryId, activities }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(true);
   const toggleExpand = () => setExpanded(!expanded);
@@ -56,7 +56,7 @@ const ControlledExpansionTable = ({ category, activities }) => {
               className={classes.buttonAddRegistry}
               onClick={handleClickAddARegistry}
             >
-              <Typography>Start an activity</Typography>
+              <Typography>Register an activity</Typography>
             </Button>
           </Grid>
           <Grid item xs={12}>
@@ -73,21 +73,24 @@ const ControlledExpansionTable = ({ category, activities }) => {
       <AddRegistryDialog
         open={openAddRegistry}
         handleClose={() => setOpenAddRegistry(false)}
+        categoryName={category}
+        categoryId={categoryId}
       />
     </ExpansionPanel>
   );
 };
 
-const Registries = ({ activities }) => {
-  const categories = activities ? Object.keys(activities) : <div />;
+const Registries = ({ activities, categories }) => {
+  const categoriesNames = activities ? Object.keys(activities) : <div />;
 
   return (
     <div>
-      {categories &&
-        categories.map(category => (
+      {categoriesNames &&
+        categoriesNames.map(category => (
           <ControlledExpansionTable
             key={category}
             category={category}
+            categoryId={categories[category].id}
             activities={Object.values(activities[category])}
           />
         ))}
@@ -112,8 +115,9 @@ const Registries = ({ activities }) => {
   );
 };
 
-const mapStateToProps = ({ activities }) => ({
-  activities: { ...activities }
+const mapStateToProps = ({ activities, categories }) => ({
+  activities: { ...activities },
+  categories: { ...categories }
 });
 
 export default connect(mapStateToProps)(Registries);
