@@ -1,13 +1,6 @@
 import { ADD_CATEGORY, DELETE_CATEGORY } from "./actions";
 
-export default (
-  state = {
-    Study: {
-      id: "b0010d14-7a3c-446b-9059-797e9e7aa9ed"
-    }
-  },
-  action
-) => {
+export default (state = {}, action) => {
   switch (action.type) {
     case ADD_CATEGORY:
       const { id, name } = action.payload;

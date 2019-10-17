@@ -139,7 +139,13 @@ const MiniDrawer = props => {
 
   const [open, setOpen] = React.useState(false);
   const url = props.match.params ? props.match.params[0] : "";
-  const [value, setValue] = React.useState(selectItemValue(url));
+  const itemValue = selectItemValue(url);
+  const [value, setValue] = React.useState(itemValue);
+  React.useEffect(() => {
+    if (value !== itemValue) {
+      setValue(itemValue);
+    }
+  }, [value, itemValue]);
 
   const handleChange = newValue => setValue(selectItemValue(newValue));
   const handleDrawerOpen = () => setOpen(true);

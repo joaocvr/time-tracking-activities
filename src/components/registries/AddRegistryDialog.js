@@ -18,6 +18,8 @@ import { connect } from "react-redux";
 
 import { addRegistry } from "./actions";
 
+import { hhMMToDate, minutesOfDifference } from "../../utils/DateUtils";
+
 const uuidv4 = require("uuid/v4");
 
 const useStyles = makeStyles(theme => ({
@@ -61,7 +63,25 @@ const Select = ({ label, value, error, disabled, onChange, items }) => {
   );
 };
 
-const TimeTextField = ({ label, error }) => {
+const DateTextField = ({ label, error, onChange }) => {
+  const classes = useStyles();
+  return (
+    <TextField
+      required
+      error={error}
+      type="date"
+      id={label}
+      label={label}
+      InputLabelProps={{
+        shrink: true
+      }}
+      className={classes.paddingBottom2}
+      onChange={onChange}
+    />
+  );
+};
+
+const TimeTextField = ({ label, error, onChange }) => {
   const classes = useStyles();
   return (
     <TextField
@@ -75,6 +95,7 @@ const TimeTextField = ({ label, error }) => {
         shrink: true
       }}
       className={classes.paddingBottom2}
+      onChange={onChange}
     />
   );
 };
@@ -95,30 +116,74 @@ const AddRegistryDialog = ({
     activityName: "",
     categoryId: categoryId,
     categoryName: categoryName,
-    start: 0,
-    finish: 0,
-    total: 0
+    date: "",
+    start: "",
+    finish: "",
+    total: 0,
+
+    isActivityNameOk() {
+      return this.activityName && this.activityName !== "" ? true : false;
+    },
+    isDateOk() {
+      return this.date && this.date !== "" ? true : false;
+    },
+    isStartOk() {
+      return this.start && this.start !== "" ? true : false;
+    },
+    isFinishOk() {
+      return this.finish && this.finish !== "" ? true : false;
+    },
+    isAllFieldsOk() {
+      return (
+        this.isActivityNameOk() &&
+        this.isDateOk() &&
+        this.isStartOk() &&
+        this.isFinishOk()
+      );
+    }
   };
 
+  const activitiesNames =
+    activities && Object.keys(activities) ? Object.keys(activities) : [];
   const [newRegistry, setNewRegistry] = React.useState(initialRegistry);
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2014-08-18T21:11:54")
-  );
 
-  const handleDateChange = date => {
-    setSelectedDate(date);
-  };
-
-  const handleChange = attribute => event => {
+  const handleChange = (attribute, isErrorFunction) => event => {
     setNewRegistry({ ...newRegistry, [attribute]: event.target.value });
+    isErrorFunction();
   };
+
+  const [isActivityNameError, setIsActivityNameError] = React.useState(false);
+  const [isDateError, setIsDateError] = React.useState(false);
+  const [isStartError, setIsStartError] = React.useState(false);
+  const [isFinishError, setIsFinishError] = React.useState(false);
 
   const handleClickAdd = () => {
-    //if (isRequiredFieldsFullfilled()) {
-    addRegistry({ ...newRegistry });
-    handleClose();
-    setNewRegistry(initialRegistry);
-    //}
+    const startDate = hhMMToDate(newRegistry.start, newRegistry.date);
+    const finishDate = hhMMToDate(newRegistry.finish, newRegistry.date);
+    const finishLaterThanStart = finishDate > startDate;
+
+    if (newRegistry.isAllFieldsOk() && finishLaterThanStart) {
+      const newRegistryWithTimes = {
+        ...newRegistry,
+        start: startDate.toLocaleTimeString(),
+        finish: finishDate.toLocaleTimeString(),
+        activityId: activities[newRegistry.activityName].id,
+        total: minutesOfDifference(startDate, finishDate)
+      };
+
+      addRegistry({ ...newRegistryWithTimes });
+      handleClose();
+      setNewRegistry(initialRegistry);
+    } else if (!finishLaterThanStart) {
+      setNewRegistry({ ...newRegistry, finish: "" });
+    }
+
+    newRegistry.isActivityNameOk()
+      ? setIsActivityNameError(false)
+      : setIsActivityNameError(true);
+    newRegistry.isDateOk() ? setIsDateError(false) : setIsDateError(true);
+    newRegistry.isStartOk() ? setIsStartError(false) : setIsStartError(true);
+    newRegistry.isFinishOk() ? setIsFinishError(false) : setIsFinishError(true);
   };
 
   const closeAndClearControllers = () => {
@@ -142,15 +207,29 @@ const AddRegistryDialog = ({
             />
             <Select
               label={"Activity"}
-              value={" "}
-              error={false}
+              value={newRegistry.activityName ? newRegistry.activityName : " "}
+              error={isActivityNameError}
               disabled={false}
-              onChange={handleChange}
-              items={activities}
+              onChange={handleChange("activityName", () =>
+                setIsActivityNameError(false)
+              )}
+              items={activitiesNames}
             />
-            insert data input here!!!
-            <TimeTextField error={false} label={"Start"} />
-            <TimeTextField error={false} label={"Finish"} />
+            <DateTextField
+              error={isDateError}
+              label={"Date"}
+              onChange={handleChange("date", () => setIsDateError(false))}
+            />
+            <TimeTextField
+              error={isStartError}
+              label={"Start"}
+              onChange={handleChange("start", () => setIsStartError(false))}
+            />
+            <TimeTextField
+              error={isFinishError}
+              label={"Finish"}
+              onChange={handleChange("finish", () => setIsFinishError(false))}
+            />
           </DialogContent>
           <Divider />
           <DialogActions>
@@ -176,7 +255,7 @@ const mapStateToProps = (
   categoryName,
   categoryId,
   activities:
-    activities && Object.keys(activities) ? Object.keys(activities) : [],
+    activities && activities[categoryName] ? activities[categoryName] : [],
   open,
   handleClose
 });

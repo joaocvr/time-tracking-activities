@@ -15,9 +15,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const DataTable = ({ columns, rows }) => {
+const DataTable = ({ columns, rows, total }) => {
   const classes = useStyles();
-
   return (
     <Paper className={classes.paper}>
       <Table size="small">
@@ -28,21 +27,26 @@ const DataTable = ({ columns, rows }) => {
         </TableHead>
         <TableBody>
           {rows &&
-            rows.map(r => (
-              <TableRow key={r.c1}>
-                {Object.values(r) &&
-                  Object.values(r).map(tuple => (
-                    <TableCell key={tuple} align="left">
-                      {tuple}
-                    </TableCell>
-                  ))}
-              </TableRow>
-            ))}
+            rows.map(row => {
+              const key = Object.keys(row)[0];
+              const arrayValues = Object.values(row)[0];
+              return (
+                <TableRow key={key}>
+                  {arrayValues &&
+                    arrayValues.length > 0 &&
+                    arrayValues.map(value => (
+                      <TableCell align="left" key={value}>
+                        {value}
+                      </TableCell>
+                    ))}
+                </TableRow>
+              );
+            })}
           <TableRow>
-            <TableCell colSpan={3} align={"right"}>
+            <TableCell colSpan={4} align={"right"}>
               Total
             </TableCell>
-            <TableCell align={"center"}>134</TableCell>
+            <TableCell align={"center"}>{total}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

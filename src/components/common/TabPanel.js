@@ -5,7 +5,6 @@ import Box from "@material-ui/core/Box";
 
 const TabPanel = props => {
   const { children, value, index, ...other } = props;
-
   return (
     <Typography
       component="div"
